@@ -61,6 +61,10 @@ html:has(body.iee-m-reserve) { scroll-padding-bottom: calc(var(--iee-m-reserve) 
   background: var(--iee-m-blue); box-shadow: inset 0 0 0 6px var(--iee-m-gold);
 }
 .iee-m-w-figure { position: relative; height: min(68vh, 600px); max-width: 100%; object-fit: contain; transform-origin: 50% 100%; }
+/* Lip-sync video sits exactly over the still render and only shows once it is actually playing. */
+.iee-m-w-video { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); opacity: 0; pointer-events: none; animation: none !important; }
+.iee-m-lipsync .iee-m-w-video { opacity: 1; }
+.iee-m-lipsync .iee-m-w-figure:not(.iee-m-w-video) { opacity: 0; animation: none; }
 .iee-m-w-copy { display: flex; flex-direction: column; gap: clamp(16px, 3vh, 28px); padding: clamp(16px, 4vh, 48px) 0; align-self: center; }
 .iee-m-w-bubble {
   position: relative; background: #FFFFFF; border-radius: 28px; padding: clamp(18px, 3vw, 30px) clamp(20px, 3vw, 34px);

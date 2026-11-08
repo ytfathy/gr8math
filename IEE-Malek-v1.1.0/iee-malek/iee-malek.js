@@ -295,6 +295,11 @@
       });
     }
     this.figure = el('img', { class: 'iee-m-w-figure', src: c.asset('hero'), alt: '' });
+    // Lip-synced welcome (opts.welcomeVideos: { en: url, ar: url }, transparent WebM). Muted: the voice clip carries the sound.
+    this.video = el('video', { class: 'iee-m-w-figure iee-m-w-video', muted: '', playsinline: '', preload: 'auto', 'aria-hidden': 'true' });
+    this.video.muted = true;
+    this.video.addEventListener('playing', function () { self.root.classList.add('iee-m-lipsync'); });
+    this.video.addEventListener('error', function () { self.root.classList.remove('iee-m-lipsync'); });
     this.speaker = el('span', { class: 'iee-m-w-speaker' });
     this.lineEl = el('p', { class: 'iee-m-w-line', 'aria-hidden': 'true' });
     this.srLine = el('p', { class: 'iee-m-sr', 'aria-live': 'polite' });
@@ -308,7 +313,7 @@
         el('div', { class: 'iee-m-w-controls' }, [this.langGroup, this.btnListen, this.btnReplay, this.btnMute])
       ]),
       el('div', { class: 'iee-m-w-stage' }, [
-        el('div', { class: 'iee-m-w-hero' }, [el('div', { class: 'iee-m-w-arch', 'aria-hidden': 'true' }), this.figure]),
+        el('div', { class: 'iee-m-w-hero' }, [el('div', { class: 'iee-m-w-arch', 'aria-hidden': 'true' }), this.figure, this.video]),
         el('div', { class: 'iee-m-w-copy' }, [
           el('div', { class: 'iee-m-w-bubble' }, [this.speaker, this.lineEl, this.srLine]),
           el('div', { class: 'iee-m-w-actions' }, [this.btnStart, this.hint, this.btnFull])
@@ -354,6 +359,11 @@
     clearInterval(this.timer); c.voice.cancel();
     this.labels();
     var ln = this.currentLine();
+    // Only the full welcome has a matching lip-sync video; any other line keeps the still render.
+    var vid = ln.cat === 'welcome' && c.opts.welcomeVideos && c.opts.welcomeVideos[c.lang];
+    this.lipsync(false);
+    if (!vid) this.root.classList.remove('iee-m-lipsync');
+    else if (this.video.getAttribute('src') !== vid) { this.root.classList.remove('iee-m-lipsync'); this.video.src = vid; this.video.load(); }
     this.words = ln.text.split(/\s+/);
     this.lineEl.innerHTML = '';
     this.words.forEach(function (w, i) {
@@ -380,15 +390,22 @@
     }, 90);
     setTimeout(function () {
       spoke = c.speak(ln.text, {
-        start: function () { voiceStarted = true; self.root.classList.add('iee-m-speaking'); self.btnListen.hidden = true; },
+        start: function () { voiceStarted = true; self.root.classList.add('iee-m-speaking'); self.btnListen.hidden = true; if (vid) self.lipsync(true); },
         boundary: function (ci) { var k = 0; while (k < offsets.length && offsets[k] <= ci) k++; if (k > self.revealed) self.reveal(k); },
-        end: function () { voiceStarted = false; self.root.classList.remove('iee-m-speaking'); self.reveal(self.words.length); clearInterval(self.timer); self.finish(); },
-        error: function () { voiceStarted = false; self.root.classList.remove('iee-m-speaking'); }
+        end: function () { voiceStarted = false; self.root.classList.remove('iee-m-speaking'); self.lipsync(false); self.reveal(self.words.length); clearInterval(self.timer); self.finish(); },
+        error: function () { voiceStarted = false; self.root.classList.remove('iee-m-speaking'); self.lipsync(false); }
       });
       // Browsers block speech until the student has interacted: offer a "Hear Malek" button.
-      if (spoke) setTimeout(function () { if (!voiceStarted) { c.voice.cancel(); self.btnListen.hidden = false; } }, 1200);
+      if (spoke) setTimeout(function () { if (!voiceStarted) { c.voice.cancel(); self.lipsync(false); self.btnListen.hidden = false; } }, 1200);
       else self.btnListen.hidden = !(c.voice.canSpeak(c.lang) && !c.muted && !userGesture) ;
     }, startDelay);
+  };
+  /* Start the talking video in step with the voice, or go back to the still render. */
+  IEEWelcomeScreen.prototype.lipsync = function (on) {
+    var v = this.video;
+    // Stopping keeps the paused video frame on screen: its framing differs a little from the still, so swapping back would jump.
+    if (!on) { try { v.pause(); } catch (e) { /* ignore */ } return; }
+    try { v.currentTime = 0; var p = v.play(); if (p && p.catch) p.catch(function () { /* still render stays */ }); } catch (e) { /* ignore */ }
   };
   IEEWelcomeScreen.prototype.reveal = function (n) {
     var spans = this.lineEl.querySelectorAll('.iee-m-word');
