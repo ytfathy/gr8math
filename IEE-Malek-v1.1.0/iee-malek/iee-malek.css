@@ -61,8 +61,12 @@ html:has(body.iee-m-reserve) { scroll-padding-bottom: calc(var(--iee-m-reserve) 
   background: var(--iee-m-blue); box-shadow: inset 0 0 0 6px var(--iee-m-gold);
 }
 .iee-m-w-figure { position: relative; height: min(68vh, 600px); max-width: 100%; object-fit: contain; transform-origin: 50% 100%; }
+/* Malek fills the arch frame; the arch clips him, so a video's own background never shows outside it. */
+/* The arch takes the video's proportions (832x1120) so Malek fills it; if space is short he stays whole on the same green. */
+.iee-m-w-arch { overflow: hidden; border: 6px solid var(--iee-m-gold); box-shadow: none; top: auto; left: 4%; right: 4%; aspect-ratio: 832 / 1120; max-height: 96%; }
+.iee-m-w-arch .iee-m-w-figure { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; object-fit: contain; object-position: 50% 100%; }
 /* Lip-sync video sits exactly over the still render and only shows once it is actually playing. */
-.iee-m-w-video { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); opacity: 0; pointer-events: none; animation: none !important; }
+.iee-m-w-video { opacity: 0; pointer-events: none; animation: none !important; }
 .iee-m-lipsync .iee-m-w-video { opacity: 1; }
 .iee-m-lipsync .iee-m-w-figure:not(.iee-m-w-video) { opacity: 0; animation: none; }
 .iee-m-w-copy { display: flex; flex-direction: column; gap: clamp(16px, 3vh, 28px); padding: clamp(16px, 4vh, 48px) 0; align-self: center; }
@@ -105,6 +109,16 @@ html:has(body.iee-m-reserve) { scroll-padding-bottom: calc(var(--iee-m-reserve) 
   .iee-m-w-bubble::before { top: -12px; inset-inline-start: 50%; margin-inline-start: -13px; }
   .iee-m-w-actions { justify-content: center; }
   .iee-m-start { width: 100%; justify-content: center; }
+}
+/* Portrait tablets: stack like phones, with a big Malek on top. */
+@media (min-width: 761px) and (max-width: 1100px) and (orientation: portrait) {
+  .iee-m-w-stage { grid-template-columns: 1fr; align-items: start; }
+  .iee-m-w-hero { min-height: 0; height: 52vh; }
+  .iee-m-w-actions { justify-content: center; }
+}
+/* Stacked layouts: centre an arch that is as tall as the hero, its width set by the video's proportions. */
+@media (max-width: 760px), (min-width: 761px) and (max-width: 1100px) and (orientation: portrait) {
+  .iee-m-w-arch { top: 0; left: 50%; right: auto; height: 100%; max-height: none; transform: translateX(-50%); }
 }
 
 /* ---------- Learning buddy (floating companion) ---------- */

@@ -313,7 +313,7 @@
         el('div', { class: 'iee-m-w-controls' }, [this.langGroup, this.btnListen, this.btnReplay, this.btnMute])
       ]),
       el('div', { class: 'iee-m-w-stage' }, [
-        el('div', { class: 'iee-m-w-hero' }, [el('div', { class: 'iee-m-w-arch', 'aria-hidden': 'true' }), this.figure, this.video]),
+        el('div', { class: 'iee-m-w-hero' }, [el('div', { class: 'iee-m-w-arch' }, [this.figure, this.video])]),
         el('div', { class: 'iee-m-w-copy' }, [
           el('div', { class: 'iee-m-w-bubble' }, [this.speaker, this.lineEl, this.srLine]),
           el('div', { class: 'iee-m-w-actions' }, [this.btnStart, this.hint, this.btnFull])
