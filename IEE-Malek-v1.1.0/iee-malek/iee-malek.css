@@ -139,6 +139,10 @@ html:has(body.iee-m-reserve) { scroll-padding-bottom: calc(var(--iee-m-reserve) 
 .iee-m-bubble.iee-m-in { animation: iee-m-pop .35s var(--iee-m-spring) both; }
 .iee-m-body { position: relative; display: flex; align-items: flex-end; justify-content: center; }
 .iee-m-figure { display: block; height: var(--iee-m-fig, 210px); width: auto; transform-origin: 50% 100%; user-select: none; -webkit-user-drag: none; }
+/* Docked lip-sync greeting: the video keeps its green screen, framed like the welcome arch. */
+.iee-m-talk { display: none; border-radius: 999px 999px 16px 16px; border: 4px solid var(--iee-m-gold); background: #00F705; animation: none !important; }
+.iee-m-talking .iee-m-talk { display: block; }
+.iee-m-talking .iee-m-figure:not(.iee-m-talk) { display: none; }
 .iee-m-shadow { position: absolute; bottom: -4px; left: 50%; width: 70%; height: 16px; margin-left: -35%; border-radius: 50%; background: rgba(14, 26, 79, .16); }
 .iee-m-tools { position: absolute; top: 4px; right: 100%; margin-right: 6px; display: flex; flex-direction: column; gap: 6px; }
 .iee-m-icon {

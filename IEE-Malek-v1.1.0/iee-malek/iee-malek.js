@@ -447,7 +447,10 @@
     this.figure = el('img', { class: 'iee-m-figure', src: c.asset('idle'), alt: '' });
     this.btnMin = el('button', { type: 'button', class: 'iee-m-icon', html: ICONS.minus, onclick: function () { self.minimize(); } });
     this.btnMute = el('button', { type: 'button', class: 'iee-m-icon', onclick: function () { c.setMuted(!c.muted); } });
-    this.body = el('div', { class: 'iee-m-body' }, [el('div', { class: 'iee-m-shadow', 'aria-hidden': 'true' }), this.figure,
+    // Lip-synced greeting (opts.welcomeVideos) plays here, muted: the voice clip carries the sound.
+    this.video = el('video', { class: 'iee-m-figure iee-m-talk', muted: '', playsinline: '', preload: 'auto', 'aria-hidden': 'true' });
+    this.video.muted = true;
+    this.body = el('div', { class: 'iee-m-body' }, [el('div', { class: 'iee-m-shadow', 'aria-hidden': 'true' }), this.figure, this.video,
       el('div', { class: 'iee-m-tools' }, [this.btnMin, this.btnMute])]);
     this.avatarImg = el('img', { src: c.asset('avatar'), alt: '' });
     this.avatar = el('button', { type: 'button', class: 'iee-m-avatar', onclick: function () { self.avatarClick(); } }, [this.avatarImg]);
@@ -568,15 +571,16 @@
       for (var j = 0; j < all.length; j++) {
         var m = all[j];
         if (self.root.contains(m) || m.classList.contains('iee-m-confetti') || m.classList.contains('iee-m-welcome')) continue;
-        var pos = global.getComputedStyle(m).position;
-        if (pos === 'fixed' || pos === 'sticky') this.fixedCache.push(m);
+        var cs = global.getComputedStyle(m);
+        // Click-through overlays (e.g. a full-screen confetti canvas) are not bars.
+        if ((cs.position === 'fixed' || cs.position === 'sticky') && cs.pointerEvents !== 'none') this.fixedCache.push(m);
       }
     }
     for (var i = 0; i < this.fixedCache.length; i++) {
       var n = this.fixedCache[i];
       if (!n.isConnected) continue;
       var b = n.getBoundingClientRect();
-      if (!b.width || !b.height || b.bottom < vh - 2) continue;
+      if (!b.width || !b.height || b.bottom < vh - 2 || b.top < vh / 2) continue; // a bottom bar starts in the lower half
       if (b.right > probe.left && b.left < probe.right && b.top < probe.bottom) lift = Math.max(lift, vh - b.top + 6);
     }
     return Math.min(lift, vh * 0.5);
@@ -617,6 +621,40 @@
       self.root.className = self.root.className.replace(/\biee-m-r-\w+\b/g, '').trim();
       self.root.classList.add('iee-m-idle');
     }, holdMs || 2600);
+  };
+  /* Greeting used when the app skips the welcome screen: the welcome line, spoken with the lip-sync video.
+     Browsers block sound until the first tap or key press, so a blocked greeting waits for it. */
+  IEELearningBuddy.prototype.greet = function () {
+    var c = this.core, self = this, v = this.video, vids = c.opts.welcomeVideos, src = vids && vids[c.lang];
+    if (!this.open || this.greeted) return;
+    var ln = c.line(c.store.get('welcomed', false) ? 'welcomeBack' : 'welcome');
+    if (ln.cat !== 'welcome') src = null; // the video only matches the full welcome line
+    this.lastLine = ln; this.bubble.textContent = ln.text; this.bubble.hidden = false;
+    this.bubble.classList.remove('iee-m-in'); void this.bubble.offsetWidth; this.bubble.classList.add('iee-m-in');
+    clearTimeout(this.hideTimer);
+    var hide = function (ms) { clearTimeout(self.hideTimer); self.hideTimer = setTimeout(function () { self.bubble.hidden = true; self.layout(); }, ms); };
+    var stop = function () { try { v.pause(); } catch (e) { /* ignore */ } self.root.classList.remove('iee-m-talking'); self.layout(); };
+    if (src && v.getAttribute('src') !== src) v.src = src;
+    var spoke = c.speak(ln.text, {
+      start: function () {
+        self.greeted = true; c.store.set('welcomed', true);
+        if (!src) return;
+        self.root.classList.add('iee-m-talking'); self.layout();
+        try { v.currentTime = 0; var p = v.play(); if (p && p.catch) p.catch(stop); } catch (e) { stop(); }
+      },
+      end: function () { stop(); hide(1500); },
+      error: function () { stop(); self.armGreet(); }
+    });
+    if (!spoke) { self.greeted = true; hide(Math.max(3800, ln.text.length * 85)); }
+    c.log('say', { cat: ln.cat, text: ln.text });
+    this.layout();
+  };
+  IEELearningBuddy.prototype.armGreet = function () {
+    if (this.greetArmed || this.greeted) return;
+    this.greetArmed = true;
+    var self = this, evs = ['pointerdown', 'keydown', 'touchstart'];
+    var once = function () { evs.forEach(function (e) { document.removeEventListener(e, once, true); }); self.greetArmed = false; self.greet(); };
+    evs.forEach(function (e) { document.addEventListener(e, once, true); });
   };
   /* Speech bubble + optional voice, with per-category cooldowns. */
   IEELearningBuddy.prototype.say = function (cat, extra, force) {
@@ -766,8 +804,9 @@
     };
     Object.keys(map).forEach(function (k) { document.addEventListener(k, map[k]); });
 
-    setInert(true);
-    var go = function () { welcome.open(); };
+    // opts.welcome === false: no welcome screen; Malek docks at once and greets from the corner.
+    if (opts.welcome !== false) setInert(true);
+    var go = function () { if (opts.welcome === false) { welcome.onStart(); buddy.greet(); } else welcome.open(); };
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', go); else go();
     return api;
   }
