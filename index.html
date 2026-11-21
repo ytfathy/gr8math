@@ -246,6 +246,13 @@ table.t td input{width:90px}
 .plot.live{cursor:crosshair}
 .plotcount{margin-top:6px}
 .plotctl{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:8px 0}
+.plot.live{touch-action:none;-webkit-user-select:none;user-select:none}
+.plottip{margin:8px 0 0;animation:tipIn .6s ease both}
+@keyframes tipIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.plottip{animation:none}}
+.lnpick i{display:inline-block;width:14px;height:14px;border-radius:50%;background:var(--lc);margin-inline-end:8px;vertical-align:-2px;border:2px solid var(--ink)}
+.lnpick[aria-checked=true]{background:var(--ink);color:#fff}
+@media (max-width:760px){.plotwrap{max-width:none}}
 .inp.sm{width:74px;font-size:18px;padding:8px 10px}
 .numx{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:4px 0}
 @media (max-width:640px){ .numx{grid-template-columns:1fr} }
@@ -516,7 +523,9 @@ window.UNITS = [
   { id: "u2", code: "03", title: "Slope & Slope-Intercept Form", ar: "الميل وصيغة الميل والمقطع", pages: "EP1 p.6–21, 23 · IXL 1–29", glyph: "∠" },
   { id: "u3", code: "04", title: "Relations & Functions", ar: "العلاقات والدوال", pages: "EP1 p.22, 24–42 · IXL 30–40", glyph: "ƒ" },
   { id: "u4", code: "05", title: "Proportional Relationships", ar: "العلاقات التناسبية", pages: "EP1 p.43–52, 55–61", glyph: "∝" },
-  { id: "u5", code: "06", title: "Number of Solutions", ar: "عدد الحلول", pages: "EP1 p.53–54, 62–66", glyph: "∞" }
+  { id: "u5", code: "06", title: "Number of Solutions", ar: "عدد الحلول", pages: "EP1 p.53–54, 62–66", glyph: "∞" },
+  { id: "u7", code: "07", quarter: 2, title: "Graphing Lines (Slope & y-Intercept)", ar: "تمثيل المستقيم بيانيًا (الميل والمقطع)", pages: "Q2 HW · Graph a line #11–20", glyph: "╱" },
+  { id: "u8", code: "08", quarter: 2, title: "Solving Systems by Graphing", ar: "حل أنظمة المعادلات بيانيًا", pages: "Q2 HW · Systems #3–12", glyph: "✕" }
 ];
 
 (function () {
@@ -695,6 +704,33 @@ window.UNITS = [
   INT(40, "Deb rides the Snowcrest Mountain ski lift to get to the top of the trail. Her elevation increases throughout the ride.", "x40", "What does the <i>y</i>-intercept of the line tell you about the situation?",
     ["The ski lift starts at an elevation of 9,600 feet.", "Deb rides the ski lift for 10 minutes.", "The ski lift gains 75 feet of elevation every minute.", "The ski lift gains 100 feet of elevation every minute."], 0);
 
+
+  // ================= SOURCE 4 · Quarter 2 homework screenshots (graphing) =================
+  // Screenshots cover "Graph this line" #11–20 of 20 and "Solve this system by graphing" #3–12 of 12 only.
+  const Q2G = (n, eqHtml, m, b) => add({ unit: "u7", page: n, item: n, id: `q2g-${String(n).padStart(2, "0")}`, src: `Q2 HW · Graph a line #${n} of 20`, short: `Q2 line #${n}`, type: "plot", prompt: "Graph this line using the slope and <i>y</i>-intercept:", math: eqHtml, ask: "Click to select points on the graph.", grid: Q4G, answer: { m, b } });
+  Q2G(11, "<i>y</i> = −6<i>x</i> + 6", "-6", "6");
+  Q2G(12, `<i>y</i> = ${fr(1, 8)}<i>x</i> − 6`, "1/8", "-6");
+  Q2G(13, `<i>y</i> = −${fr(3, 5)}<i>x</i> − 6`, "-3/5", "-6");
+  Q2G(14, "<i>y</i> = 5<i>x</i> − 10", "5", "-10");
+  Q2G(15, `<i>y</i> = −${fr(2, 3)}<i>x</i> + 5`, "-2/3", "5");
+  Q2G(16, `<i>y</i> = −${fr(9, 7)}<i>x</i> + 4`, "-9/7", "4");
+  Q2G(17, `<i>y</i> = −${fr(8, 7)}<i>x</i> + 8`, "-8/7", "8");
+  Q2G(18, `<i>y</i> = ${fr(1, 6)}<i>x</i> + 4`, "1/6", "4");
+  Q2G(19, "<i>y</i> = −3<i>x</i> − 2", "-3", "-2");
+  Q2G(20, `<i>y</i> = −${fr(7, 8)}<i>x</i> − 1`, "-7/8", "-1");
+  const Y_ = (h) => `<i>y</i> = ${h}`;
+  const SYS = (n, e1, e2, l1, l2, sol, how, flag) => add(Object.assign({ unit: "u8", page: n, item: n, id: `q2s-${String(n).padStart(2, "0")}`, src: `Q2 HW · System by graphing #${n} of 12`, short: `Q2 system #${n}`, type: "sys", prompt: "Solve this system of equations by graphing. First graph the equations, and then type the solution.", math: `${e1}<br>${e2}`, ask: "Click to select points on the graph.", grid: Q4G, answer: { lines: [{ m: l1[0], b: l1[1] }, { m: l2[0], b: l2[1] }], sol }, how }, flag ? { flag } : {}));
+  SYS(3, Y_(`${fr(5, 2)}<i>x</i> − 1`), Y_(`${fr(7, 2)}<i>x</i> − 3`), ["5/2", "-1"], ["7/2", "-3"], ["2", "4"], "5/2·x − 1 = 7/2·x − 3 → x = 2, y = 4.");
+  SYS(4, Y_(`${fr(5, 2)}<i>x</i> + 4`), Y_(`${fr(1, 2)}<i>x</i>`), ["5/2", "4"], ["1/2", "0"], ["-2", "-1"], "5/2·x + 4 = 1/2·x → 2x = −4 → x = −2, y = −1.");
+  SYS(5, Y_(`−${fr(1, 3)}<i>x</i> + 2`), Y_(`−${fr(2, 3)}<i>x</i> + 4`), ["-1/3", "2"], ["-2/3", "4"], ["6", "0"], "−1/3·x + 2 = −2/3·x + 4 → 1/3·x = 2 → x = 6, y = 0.", "Question number is cropped in the screenshot; placed as #5 by its position between #4 and #6.");
+  SYS(6, Y_("<i>x</i> − 4"), Y_(`−${fr(1, 6)}<i>x</i> + 3`), ["1", "-4"], ["-1/6", "3"], ["6", "2"], "x − 4 = −1/6·x + 3 → 7/6·x = 7 → x = 6, y = 2.");
+  SYS(7, "<i>x</i> + <i>y</i> = 8", Y_(`−${fr(1, 2)}<i>x</i> + 7`), ["-1", "8"], ["-1/2", "7"], ["2", "6"], "x + y = 8 is y = −x + 8. −x + 8 = −1/2·x + 7 → x = 2, y = 6.");
+  SYS(8, Y_("−<i>x</i> + 8"), Y_("6"), ["-1", "8"], ["0", "6"], ["2", "6"], "−x + 8 = 6 → x = 2; y = 6 is a horizontal line.");
+  SYS(9, "2<i>x</i> − <i>y</i> = −6", "2<i>x</i> + <i>y</i> = 2", ["2", "6"], ["-2", "2"], ["-1", "4"], "2x − y = −6 is y = 2x + 6; 2x + y = 2 is y = −2x + 2. 2x + 6 = −2x + 2 → x = −1, y = 4.");
+  SYS(10, Y_("−<i>x</i> + 3"), Y_(`${fr(5, 3)}<i>x</i> − 5`), ["-1", "3"], ["5/3", "-5"], ["3", "0"], "−x + 3 = 5/3·x − 5 → 8 = 8/3·x → x = 3, y = 0.");
+  SYS(11, "3<i>x</i> + 4<i>y</i> = −12", Y_(`−${fr(3, 2)}<i>x</i>`), ["-3/4", "-3"], ["-3/2", "0"], ["4", "-6"], "3x + 4y = −12 is y = −3/4·x − 3. −3/4·x − 3 = −3/2·x → 3/4·x = 3 → x = 4, y = −6.");
+  SYS(12, "<i>x</i> + <i>y</i> = 5", Y_("4<i>x</i>"), ["-1", "5"], ["4", "0"], ["1", "4"], "x + y = 5 is y = −x + 5. −x + 5 = 4x → x = 1, y = 4.");
+
   Q.forEach((q) => { if (!q.id) q.id = `p${String(q.page).padStart(2, "0")}-${q.item}`; if (!q.src) { q.src = `EP1 p.${q.page}${q.page <= 5 ? " · #" + q.item : ""}`; q.short = `p.${q.page}${q.page <= 5 ? " #" + q.item : ""}`; } });
   window.QUESTIONS = Q;
 })();
@@ -781,6 +817,24 @@ window.UNITS = [
     return { status: "right" };
   }
 
+  // Graph helpers: points are integer [x, y] pairs; keys are exact rationals, so all checks are exact.
+  const twoPts = (r) => Array.isArray(r) && r.length === 2 && !(r[0][0] === r[1][0] && r[0][1] === r[1][1]);
+  const onLine = (pt, a) => {
+    if (a.vertical != null) return pt[0] === Number(a.vertical);
+    const m = parseRational(a.m), b = parseRational(a.b);
+    return pt[1] * m.d * b.d === m.n * pt[0] * b.d + b.n * m.d;   // y = m x + b
+  };
+  const lineOk = (r, a) => twoPts(r) && onLine(r[0], a) && onLine(r[1], a);
+  // Which half of y = mx + b the student's two points got right.
+  function partLine(r, a) {
+    const [p, q2] = r, dx = q2[0] - p[0], dy = q2[1] - p[1];
+    if (dx === 0) return undefined;
+    const m = parseRational(a.m), b = parseRational(a.b);
+    if (dy * m.d === m.n * dx) return "slopeOk";
+    if ((b.n - p[1] * b.d) * dx === -dy * p[0] * b.d) return "interceptOk";   // student's line crosses (0, b)
+    return undefined;
+  }
+
   function grade(q, resp) {
     switch (q.type) {
       case "num": return gradeNumber(resp, q.answer);
@@ -792,15 +846,21 @@ window.UNITS = [
         return { status: a === k ? "right" : "wrong" };
       }
       case "plot": {
-        if (!Array.isArray(resp) || resp.length < 2) return { status: "empty" };
-        const [p, q2] = resp;
-        if (p[0] === q2[0] && p[1] === q2[1]) return { status: "empty" };
-        const on = (pt) => {
-          if (q.answer.vertical != null) return pt[0] === Number(q.answer.vertical);
-          const m = parseRational(q.answer.m), b = parseRational(q.answer.b);
-          return pt[1] * m.d * b.d === m.n * pt[0] * b.d + b.n * m.d;   // y = m x + b, exact integers
-        };
-        return { status: on(p) && on(q2) ? "right" : "wrong" };
+        if (!twoPts(resp)) return { status: "empty" };
+        if (lineOk(resp, q.answer)) return { status: "right" };
+        return { status: "wrong", msg: q.answer.vertical != null ? undefined : partLine(resp, q.answer) };
+      }
+      case "sys": {
+        const r = resp || {};
+        if (!twoPts(r.a) || !twoPts(r.b) || !clean(r.x) || !clean(r.y)) return { status: "empty" };
+        const gx = gradeNumber(r.x, q.answer.sol[0]), gy = gradeNumber(r.y, q.answer.sol[1]);
+        if (gx.status === "invalid" || gy.status === "invalid") return { status: "invalid", msg: "unreadable" };
+        const [L1, L2] = q.answer.lines;
+        // either line may be drawn first
+        const straight = lineOk(r.a, L1) && lineOk(r.b, L2), swapped = lineOk(r.a, L2) && lineOk(r.b, L1);
+        const parts = straight || swapped ? [true, true] : [lineOk(r.a, L1) || lineOk(r.a, L2), lineOk(r.b, L1) || lineOk(r.b, L2)];
+        parts.push(gx.status === "right" && gy.status === "right");
+        return { status: parts.every(Boolean) ? "right" : "wrong", parts };
       }
       case "numx": {
         if (resp === "none" || resp === "all") return { status: resp === q.answer ? "right" : "wrong" };
@@ -835,6 +895,11 @@ window.UNITS = [
       if (q.type === "num" && gradeNumber(q.answer, q.answer).status !== "right") errs.push(q.id + " key not simplest");
       if ((q.type === "eq" || q.type === "plot") && q.answer.vertical == null && (!parseRational(q.answer.m) || !parseRational(q.answer.b))) errs.push(q.id + " bad eq key");
       if (q.type === "plot" && !q.grid) errs.push(q.id + " plot without grid");
+      if (q.type === "sys") {
+        const a = q.answer, ok = a && a.lines && a.lines.length === 2 && a.lines.every((l) => parseRational(l.m) && parseRational(l.b)) && a.sol && a.sol.every((v) => parseRational(v));
+        if (!ok || !q.grid) errs.push(q.id + " bad sys key");
+        else if (!a.lines.every((l) => onLine(a.sol.map(Number), l))) errs.push(q.id + " sys solution not on both lines");
+      }
       if (q.type === "numx" && !(q.answer === "none" || q.answer === "all" || parseRational(q.answer))) errs.push(q.id + " bad numx key");
       if (q.type === "table" && q.answer.length !== q.rows.filter((r) => r[1] === null).length) errs.push(q.id + " table key mismatch");
     });
@@ -861,9 +926,9 @@ window.UNITS = [
 
   // ---------- i18n (UI chrome only; questions stay in source English) ----------
   const T = {
-    en: { sub: "Grade 8 Math", report: "Report", logout: "Logout", eyebrow: `${TOTAL} questions · 6 stations · 3 sources`, quarter: (n) => `Quarter ${n}`, qStations: (n) => `${n} stations`, soonTag: "Coming soon", soonTitle: (n) => `Quarter ${n} is on its way`, soonP: "New stations, questions and challenges for this quarter are being prepared. Your progress in Quarter 1 is saved and waiting for you.", backQ1: "Go to Quarter 1 →", lede: "Travel through six stations — equations, applying equations, slope, functions, proportional relationships and number of solutions. Every question is checked instantly, and your report builds as you go.", nameLbl: "Student name (shown on your report)", namePh: "Type your name", start: "Start expedition →", cont: "Continue expedition →", overall: "Overall progress", complete: "complete", score: "Score", accuracy: "Accuracy", best: "Best streak", route: "The route", routeP: "Pick any station. Inside a station you answer in order — no skipping — and each answer is locked once checked.", howTitle: "How scoring works", srcTitle: "Source coverage", flags: "Items flagged for teacher review", map: "Map", correct: "Correct", unanswered: "Unanswered", station: "This station", answered: "answered", keys: "Controls", perf: "Student performance report", copy: "Copy report", retryAll: "Retry incorrect", byStation: "By station", toReview: "To review", toReviewP: "Questions currently marked incorrect, with the correct answer.", reset: "Reset all progress", close: "Close", begin: "Begin", resume: "Continue", review: "Review", retry: "Retry incorrect", questions: "questions", pages: "Source pages", qOf: (a, b) => `Question ${a} of ${b}`, check: "Check answer", next: "Next question →", finish: "Finish station ✓", right: "Correct!", wrong: "Not quite.", ca: "Correct answer:", yours: "Your answer:", notSimplest: "Same value, but the question asks for an integer or a fraction in simplest form.", unreadable: "Enter an integer or a fraction such as -5/9.", notSI: "Write your equation in the form y = mx + b, e.g. y = 3/4x − 2 (or x = c for a vertical line).", plotHint: "Select two different points on the grid.", clearPts: "Clear points", addPt: "Add point", ptsSel: (n) => `${n} of 2 points selected`, never: "Never equal (no solution)", always: "Always equal (infinitely many)", orType: "or type a number", pickOne: "Choose an answer first.", fillAll: "Fill in every box first.", src: "Source p.", flagTag: "Teacher note", stationDone: "Station complete!", allDone: "Expedition complete!", backMap: "Back to map", seeReport: "See report", notAttempted: "Not attempted", resetQ: "Reset all progress?", resetP: "This clears every answer, XP and badge saved in this browser. This cannot be undone.", cancel: "Cancel", confirm: "Yes, reset", copied: "Report copied to clipboard", copyFail: "Copy blocked — select the report and copy manually", boss: "Mixed Review", bossP: "Unlocks when every question has been answered. Retry everything you missed, across all stations.", bossLocked: (n) => `${n} questions left to unlock`, bossNone: "Nothing to review — perfect!", firstTry: "First-try accuracy", completion: "Completion", xp: "XP earned", student: "Student", noMiss: "No incorrect answers right now.", date: "Generated", unit: "Station", noName: "Unnamed student", saved: "Progress is saved in this browser only.", namePrompt: "Add your name so it appears on the report.", enterHint: "Enter = check / next", kbdTip: "<b>Enter</b> checks your answer, then moves on. <b>1–4</b> choose options. Tap a graph to enlarge it.", resultLine: (c, t, a) => `${c} of ${t} correct · accuracy ${a}`,
+    en: { sub: "Grade 8 Math", report: "Report", logout: "Logout", eyebrow: `${TOTAL} questions · ${UNITS.length} stations · 4 sources`, quarter: (n) => `Quarter ${n}`, qStations: (n) => `${n} stations`, soonTag: "Coming soon", soonTitle: (n) => `Quarter ${n} is on its way`, soonP: "New stations, questions and challenges for this quarter are being prepared. Your progress in Quarter 1 is saved and waiting for you.", backQ1: "Go to Quarter 1 →", lede: "Travel through six stations — equations, applying equations, slope, functions, proportional relationships and number of solutions. Every question is checked instantly, and your report builds as you go.", nameLbl: "Student name (shown on your report)", namePh: "Type your name", start: "Start expedition →", cont: "Continue expedition →", overall: "Overall progress", complete: "complete", score: "Score", accuracy: "Accuracy", best: "Best streak", route: "The route", routeP: "Pick any station. Inside a station you answer in order — no skipping — and each answer is locked once checked.", howTitle: "How scoring works", srcTitle: "Source coverage", flags: "Items flagged for teacher review", map: "Map", correct: "Correct", unanswered: "Unanswered", station: "This station", answered: "answered", keys: "Controls", perf: "Student performance report", copy: "Copy report", retryAll: "Retry incorrect", byStation: "By station", toReview: "To review", toReviewP: "Questions currently marked incorrect, with the correct answer.", reset: "Reset all progress", close: "Close", begin: "Begin", resume: "Continue", review: "Review", retry: "Retry incorrect", questions: "questions", pages: "Source pages", qOf: (a, b) => `Question ${a} of ${b}`, check: "Check answer", next: "Next question →", finish: "Finish station ✓", right: "Correct!", wrong: "Not quite.", ca: "Correct answer:", yours: "Your answer:", notSimplest: "Same value, but the question asks for an integer or a fraction in simplest form.", unreadable: "Enter an integer or a fraction such as -5/9.", notSI: "Write your equation in the form y = mx + b, e.g. y = 3/4x − 2 (or x = c for a vertical line).", plotHint: "Select two different points on the grid.", sysHint: "Draw both lines (2 points each) and type the solution.", plotTip: "Plot two points and they connect into your line. Tap a point to remove it, or drag it to move it.", undo: "↶ Undo", lineN: (n) => `Line ${n}`, solIs: "The solution is", slopeOk: "Your slope is right, but the y-intercept is not.", interceptOk: "Your y-intercept is right, but the slope is not.", clearPts: "Clear points", addPt: "Add point", ptsSel: (n) => `${n} of 2 points selected`, never: "Never equal (no solution)", always: "Always equal (infinitely many)", orType: "or type a number", pickOne: "Choose an answer first.", fillAll: "Fill in every box first.", src: "Source p.", flagTag: "Teacher note", stationDone: "Station complete!", allDone: "Expedition complete!", backMap: "Back to map", seeReport: "See report", notAttempted: "Not attempted", resetQ: "Reset all progress?", resetP: "This clears every answer, XP and badge saved in this browser. This cannot be undone.", cancel: "Cancel", confirm: "Yes, reset", copied: "Report copied to clipboard", copyFail: "Copy blocked — select the report and copy manually", boss: "Mixed Review", bossP: "Unlocks when every question has been answered. Retry everything you missed, across all stations.", bossLocked: (n) => `${n} questions left to unlock`, bossNone: "Nothing to review — perfect!", firstTry: "First-try accuracy", completion: "Completion", xp: "XP earned", student: "Student", noMiss: "No incorrect answers right now.", date: "Generated", unit: "Station", noName: "Unnamed student", saved: "Progress is saved in this browser only.", namePrompt: "Add your name so it appears on the report.", enterHint: "Enter = check / next", kbdTip: "<b>Enter</b> checks your answer, then moves on. <b>1–4</b> choose options. Tap a graph to enlarge it.", resultLine: (c, t, a) => `${c} of ${t} correct · accuracy ${a}`,
       how: ["<b>Accuracy</b> = correct ÷ answered × 100 (shown as “—” until you answer).", `<b>Completion</b> = answered ÷ ${TOTAL} × 100.`, "Each answer is checked once and then locked. Unanswered questions never count as correct.", "Fractions must be simplified: <code>-5/9</code> ✓, <code>-10/18</code> ✗. Equations as <code>y = mx + b</code>.", "<b>XP</b>: +10 first-try correct, +5 correct on a retry, +2 bonus per answer while your streak is 3 or more.", "Stars per station: ★★★ 90%+, ★★ 70%+, ★ 50%+."] },
-    ar: { sub: "رياضيات الصف الثامن", report: "التقرير", logout: "خروج", eyebrow: `${TOTAL} سؤالًا · 6 محطات · 3 مصادر`, quarter: (n) => `الربع ${["", "الأول", "الثاني", "الثالث", "الرابع"][n]}`, qStations: (n) => `${n} محطات`, soonTag: "قريبًا", soonTitle: (n) => `الربع ${["", "الأول", "الثاني", "الثالث", "الرابع"][n]} قادم قريبًا`, soonP: "نجهّز محطات وأسئلة وتحديات جديدة لهذا الربع. تقدّمك في الربع الأول محفوظ وفي انتظارك.", backQ1: "انتقل إلى الربع الأول ←", lede: "انطلق عبر ست محطات: المعادلات وتطبيقاتها، والميل، والدوال، والعلاقات التناسبية، وعدد الحلول. يُصحَّح كل سؤال فورًا ويُبنى تقريرك أثناء الحل.", nameLbl: "اسم الطالب (يظهر في التقرير)", namePh: "اكتب اسمك", start: "ابدأ الرحلة ←", cont: "تابع الرحلة ←", overall: "التقدم العام", complete: "مكتمل", score: "الدرجة", accuracy: "الدقة", best: "أفضل سلسلة", route: "المسار", routeP: "اختر أي محطة. داخل المحطة تجيب بالترتيب دون تخطٍّ، ويُقفل كل جواب بعد التحقق منه.", howTitle: "طريقة احتساب الدرجات", srcTitle: "تغطية المصدر", flags: "أسئلة تحتاج مراجعة المعلم", map: "الخريطة", correct: "صحيح", unanswered: "بدون إجابة", station: "هذه المحطة", answered: "تمت الإجابة", keys: "التحكم", perf: "تقرير أداء الطالب", copy: "نسخ التقرير", retryAll: "إعادة الأخطاء", byStation: "حسب المحطة", toReview: "للمراجعة", toReviewP: "الأسئلة المصنفة حاليًا كإجابات خاطئة مع الإجابة الصحيحة.", reset: "مسح كل التقدم", close: "إغلاق", begin: "ابدأ", resume: "تابع", review: "مراجعة", retry: "إعادة الأخطاء", questions: "سؤالًا", pages: "صفحات المصدر", qOf: (a, b) => `السؤال ${a} من ${b}`, check: "تحقق من الإجابة", next: "السؤال التالي ←", finish: "إنهاء المحطة ✓", right: "إجابة صحيحة!", wrong: "ليست صحيحة.", ca: "الإجابة الصحيحة:", yours: "إجابتك:", notSimplest: "القيمة نفسها، لكن المطلوب عدد صحيح أو كسر في أبسط صورة.", unreadable: "اكتب عددًا صحيحًا أو كسرًا مثل ‎-5/9.", notSI: "اكتب المعادلة بالصورة y = mx + b (أو x = c للخط الرأسي).", plotHint: "اختر نقطتين مختلفتين على الشبكة.", clearPts: "مسح النقاط", addPt: "إضافة نقطة", ptsSel: (n) => `تم اختيار ${n} من 2`, never: "لا يتساويان أبدًا (لا يوجد حل)", always: "متساويان دائمًا (عدد لا نهائي)", orType: "أو اكتب عددًا", pickOne: "اختر إجابة أولًا.", fillAll: "املأ كل الخانات أولًا.", src: "المصدر ص.", flagTag: "ملاحظة للمعلم", stationDone: "اكتملت المحطة!", allDone: "اكتملت الرحلة!", backMap: "العودة للخريطة", seeReport: "عرض التقرير", notAttempted: "لم يبدأ", resetQ: "مسح كل التقدم؟", resetP: "سيُحذف كل ما حُفظ في هذا المتصفح من إجابات ونقاط وشارات، ولا يمكن التراجع.", cancel: "إلغاء", confirm: "نعم، امسح", copied: "تم نسخ التقرير", copyFail: "تعذر النسخ — حدّد التقرير وانسخه يدويًا", boss: "مراجعة شاملة", bossP: "تُفتح بعد الإجابة عن كل الأسئلة. أعد كل ما أخطأت فيه من جميع المحطات.", bossLocked: (n) => `باقي ${n} سؤالًا للفتح`, bossNone: "لا توجد أخطاء — ممتاز!", firstTry: "دقة المحاولة الأولى", completion: "الإنجاز", xp: "النقاط", student: "الطالب", noMiss: "لا توجد إجابات خاطئة حاليًا.", date: "تاريخ الإنشاء", unit: "المحطة", noName: "طالب بدون اسم", saved: "يُحفظ التقدم في هذا المتصفح فقط.", namePrompt: "أضف اسمك ليظهر في التقرير.", enterHint: "Enter = تحقق / التالي", kbdTip: "<b>Enter</b> للتحقق ثم الانتقال. <b>1–4</b> لاختيار الإجابة. اضغط على الرسم لتكبيره.", resultLine: (c, t, a) => `${c} من ${t} صحيحة · الدقة ${a}`,
+    ar: { sub: "رياضيات الصف الثامن", report: "التقرير", logout: "خروج", eyebrow: `${TOTAL} سؤالًا · ${UNITS.length} محطات · 4 مصادر`, quarter: (n) => `الربع ${["", "الأول", "الثاني", "الثالث", "الرابع"][n]}`, qStations: (n) => `${n} محطات`, soonTag: "قريبًا", soonTitle: (n) => `الربع ${["", "الأول", "الثاني", "الثالث", "الرابع"][n]} قادم قريبًا`, soonP: "نجهّز محطات وأسئلة وتحديات جديدة لهذا الربع. تقدّمك في الربع الأول محفوظ وفي انتظارك.", backQ1: "انتقل إلى الربع الأول ←", lede: "انطلق عبر ست محطات: المعادلات وتطبيقاتها، والميل، والدوال، والعلاقات التناسبية، وعدد الحلول. يُصحَّح كل سؤال فورًا ويُبنى تقريرك أثناء الحل.", nameLbl: "اسم الطالب (يظهر في التقرير)", namePh: "اكتب اسمك", start: "ابدأ الرحلة ←", cont: "تابع الرحلة ←", overall: "التقدم العام", complete: "مكتمل", score: "الدرجة", accuracy: "الدقة", best: "أفضل سلسلة", route: "المسار", routeP: "اختر أي محطة. داخل المحطة تجيب بالترتيب دون تخطٍّ، ويُقفل كل جواب بعد التحقق منه.", howTitle: "طريقة احتساب الدرجات", srcTitle: "تغطية المصدر", flags: "أسئلة تحتاج مراجعة المعلم", map: "الخريطة", correct: "صحيح", unanswered: "بدون إجابة", station: "هذه المحطة", answered: "تمت الإجابة", keys: "التحكم", perf: "تقرير أداء الطالب", copy: "نسخ التقرير", retryAll: "إعادة الأخطاء", byStation: "حسب المحطة", toReview: "للمراجعة", toReviewP: "الأسئلة المصنفة حاليًا كإجابات خاطئة مع الإجابة الصحيحة.", reset: "مسح كل التقدم", close: "إغلاق", begin: "ابدأ", resume: "تابع", review: "مراجعة", retry: "إعادة الأخطاء", questions: "سؤالًا", pages: "صفحات المصدر", qOf: (a, b) => `السؤال ${a} من ${b}`, check: "تحقق من الإجابة", next: "السؤال التالي ←", finish: "إنهاء المحطة ✓", right: "إجابة صحيحة!", wrong: "ليست صحيحة.", ca: "الإجابة الصحيحة:", yours: "إجابتك:", notSimplest: "القيمة نفسها، لكن المطلوب عدد صحيح أو كسر في أبسط صورة.", unreadable: "اكتب عددًا صحيحًا أو كسرًا مثل ‎-5/9.", notSI: "اكتب المعادلة بالصورة y = mx + b (أو x = c للخط الرأسي).", plotHint: "اختر نقطتين مختلفتين على الشبكة.", sysHint: "ارسم المستقيمين (نقطتان لكل مستقيم) واكتب الحل.", plotTip: "حدّد نقطتين وسيتصلان ليكوّنا المستقيم. اضغط على نقطة لحذفها أو اسحبها لتحريكها.", undo: "↶ تراجع", lineN: (n) => `المستقيم ${n}`, solIs: "الحل هو", slopeOk: "الميل صحيح، لكن المقطع الصادي غير صحيح.", interceptOk: "المقطع الصادي صحيح، لكن الميل غير صحيح.", clearPts: "مسح النقاط", addPt: "إضافة نقطة", ptsSel: (n) => `تم اختيار ${n} من 2`, never: "لا يتساويان أبدًا (لا يوجد حل)", always: "متساويان دائمًا (عدد لا نهائي)", orType: "أو اكتب عددًا", pickOne: "اختر إجابة أولًا.", fillAll: "املأ كل الخانات أولًا.", src: "المصدر ص.", flagTag: "ملاحظة للمعلم", stationDone: "اكتملت المحطة!", allDone: "اكتملت الرحلة!", backMap: "العودة للخريطة", seeReport: "عرض التقرير", notAttempted: "لم يبدأ", resetQ: "مسح كل التقدم؟", resetP: "سيُحذف كل ما حُفظ في هذا المتصفح من إجابات ونقاط وشارات، ولا يمكن التراجع.", cancel: "إلغاء", confirm: "نعم، امسح", copied: "تم نسخ التقرير", copyFail: "تعذر النسخ — حدّد التقرير وانسخه يدويًا", boss: "مراجعة شاملة", bossP: "تُفتح بعد الإجابة عن كل الأسئلة. أعد كل ما أخطأت فيه من جميع المحطات.", bossLocked: (n) => `باقي ${n} سؤالًا للفتح`, bossNone: "لا توجد أخطاء — ممتاز!", firstTry: "دقة المحاولة الأولى", completion: "الإنجاز", xp: "النقاط", student: "الطالب", noMiss: "لا توجد إجابات خاطئة حاليًا.", date: "تاريخ الإنشاء", unit: "المحطة", noName: "طالب بدون اسم", saved: "يُحفظ التقدم في هذا المتصفح فقط.", namePrompt: "أضف اسمك ليظهر في التقرير.", enterHint: "Enter = تحقق / التالي", kbdTip: "<b>Enter</b> للتحقق ثم الانتقال. <b>1–4</b> لاختيار الإجابة. اضغط على الرسم لتكبيره.", resultLine: (c, t, a) => `${c} من ${t} صحيحة · الدقة ${a}`,
       how: ["<b>الدقة</b> = الإجابات الصحيحة ÷ الأسئلة المُجابة × 100.", `<b>الإنجاز</b> = الأسئلة المُجابة ÷ ${TOTAL} × 100.`, "يُصحَّح كل سؤال مرة واحدة ثم يُقفل، ولا يُحتسب السؤال غير المُجاب صحيحًا.", "يجب تبسيط الكسور: <code>-5/9</code> ✓ و<code>-10/18</code> ✗. والمعادلات بالصورة <code>y = mx + b</code>.", "<b>النقاط</b>: ‎+10 للإجابة الصحيحة من أول محاولة، ‎+5 عند الإعادة، و‎+2 مكافأة عند سلسلة 3 أو أكثر.", "النجوم: ★★★ ‏90%+ و★★ ‏70%+ و★ ‏50%+."] }
   };
   const BADGES = [
@@ -911,6 +976,7 @@ window.UNITS = [
       case "ms": return r.length ? r.slice().sort().map((i) => optText(q, i)).join(", ") : "—";
       case "table": return q.rows.filter((x) => x[1] === null).map((x, i) => `${x[0]} → ${esc(r[i] || "")}`).join(", ");
       case "plot": return r.map((p) => `(${p[0]}, ${p[1]})`).join(" and ");
+      case "sys": return `${t("lineN", 1)}: ${(r.a || []).map((p) => `(${p[0]}, ${p[1]})`).join(" and ")} · ${t("lineN", 2)}: ${(r.b || []).map((p) => `(${p[0]}, ${p[1]})`).join(" and ")} · ${t("solIs")} (${esc(r.x)}, ${esc(r.y)})`;
       case "numx": return r === "none" ? t("never") : r === "all" ? t("always") : (q.label ? q.label + " " : "") + esc(r);
     }
   }
@@ -922,8 +988,8 @@ window.UNITS = [
     const bb = b === "0" ? "" : b.startsWith("-") ? " − " + b.slice(1) : " + " + b;
     return `<i>y</i> = ${mm}<i>x</i>${bb}`;
   };
-  function latticeOnLine(q) {
-    const g = q.grid, a = q.answer, out = [];
+  function latticeOnLine(q, a) {
+    const g = q.grid, out = []; a = a || q.answer;
     for (let x = g.xmin; x <= g.xmax; x += g.step) {
       if (a.vertical != null) { if (x === Number(a.vertical)) { out.push([x, 0], [x, g.step * 2]); } continue; }
       const m = G.parseRational(a.m), b = G.parseRational(a.b);
@@ -937,6 +1003,7 @@ window.UNITS = [
       case "num": return (q.label ? q.label + " " : "") + q.answer.replace("-", "−");
       case "eq": return lineHtml(q.answer);
       case "plot": { const p = latticeOnLine(q).slice(0, 2); return `${lineHtml(q.answer)} — e.g. (${p[0][0]}, ${p[0][1]}) and (${p[1][0]}, ${p[1][1]})`; }
+      case "sys": return `${q.answer.lines.map((l) => { const p = latticeOnLine(q, l).slice(0, 2); return `${lineHtml(l)} — e.g. (${p[0][0]}, ${p[0][1]}) and (${p[1][0]}, ${p[1][1]})`; }).join("; ")}. ${t("solIs")} (${q.answer.sol.map((v) => v.replace("-", "−")).join(", ")})`;
       case "numx": return q.answer === "none" ? t("never") : q.answer === "all" ? t("always") : (q.label ? q.label + " " : "") + q.answer;
       case "mc": return optText(q, q.answer);
       case "ms": return q.answer.map((i) => optText(q, i)).join(", ");
@@ -988,7 +1055,7 @@ window.UNITS = [
 
     renderQuarters();
     const r = $("#route"); r.innerHTML = "";
-    UNITS.forEach((u) => {
+    qUnits([1, 2, 3, 4].includes(S.qtab) ? S.qtab : 1).forEach((u) => {
       const list = byUnit[u.id], mm = metrics(list), st = starsFor(mm);
       const card = el("div", { class: "station" });
       const verb = mm.answered === 0 ? t("begin") : mm.answered < mm.total ? t("resume") : t("review");
@@ -1006,7 +1073,7 @@ window.UNITS = [
     const all = metrics(QS), wrong = all.answered - all.correct;
     const boss = el("div", { class: "station boss" });
     const unlocked = all.unanswered === 0;
-    boss.innerHTML = `<div class="row"><span class="num">07</span><span class="glyph" aria-hidden="true">♛</span></div><h3>${t("boss")}</h3><div class="meta">${t("bossP")}</div>
+    boss.innerHTML = `<div class="row"><span class="num">${String(UNITS.length + 1).padStart(2, "0")}</span><span class="glyph" aria-hidden="true">♛</span></div><h3>${t("boss")}</h3><div class="meta">${t("bossP")}</div>
       <div class="foot"><button class="btn gold sm" data-boss ${!unlocked || !wrong ? "disabled" : ""}>${!unlocked ? "🔒 " + t("bossLocked", all.unanswered) : wrong ? t("retry") + ` (${wrong}) →` : t("bossNone")}</button></div>`;
     r.appendChild(boss);
     r.querySelectorAll("[data-go]").forEach((b) => b.addEventListener("click", () => go("station-" + b.dataset.go)));
@@ -1016,16 +1083,19 @@ window.UNITS = [
     $("#howList").innerHTML = t("how").map((x) => `<li>${x}</li>`).join("");
     const flagged = QS.filter((q) => q.flag);
     $("#srcP").innerHTML = S.lang === "ar"
-      ? `<b>${TOTAL}</b> سؤالًا من 3 مصادر: التدريب الإضافي 1 (76 سؤالًا، 66 صفحة)، وورقة L3.3 تطبيقات المعادلات الخطية (10 أسئلة)، ومراجعة IXL رقم 2 (40 سؤالًا). كل سؤال يحمل مصدره ورقمه الأصلي. لا تحتوي المصادر على مفتاح إجابات؛ لذا حُسبت الإجابات رياضيًا وتم التحقق منها. ${t("saved")}`
-      : `<b>${TOTAL}</b> questions from 3 sources: Quarter 1 Extra Practice 1 (76 items, 66 scanned pages), the L3.3 Applying Linear Equations worksheet (10 items) and G8 IXL Quiz Review 2 (40 items). Every question shows its source and original number. None of the sources include an answer key, so keys were derived mathematically and verified. ${t("saved")}`;
+      ? `<b>${TOTAL}</b> سؤالًا من 4 مصادر: التدريب الإضافي 1 (76 سؤالًا، 66 صفحة)، وورقة L3.3 تطبيقات المعادلات الخطية (10 أسئلة)، ومراجعة IXL رقم 2 (40 سؤالًا)، وواجب التمثيل البياني للربع الثاني (20 سؤالًا). كل سؤال يحمل مصدره ورقمه الأصلي. لا تحتوي المصادر على مفتاح إجابات؛ لذا حُسبت الإجابات رياضيًا وتم التحقق منها. ${t("saved")}`
+      : `<b>${TOTAL}</b> questions from 4 sources: Quarter 1 Extra Practice 1 (76 items, 66 scanned pages), the L3.3 Applying Linear Equations worksheet (10 items), G8 IXL Quiz Review 2 (40 items) and the Quarter 2 graphing homework (20 items). Every question shows its source and original number. None of the sources include an answer key, so keys were derived mathematically and verified. ${t("saved")}`;
     $("#flagList").innerHTML = flagged.map((q) => `<li><b>${esc(q.short)}</b> — ${q.flag}</li>`).join("");
   }
+  const qOf = (u) => u.quarter || 1;
+  const qUnits = (n) => UNITS.filter((u) => qOf(u) === n);
   function renderQuarters() {
     const cur = [1, 2, 3, 4].includes(S.qtab) ? S.qtab : 1;
     const bar = $("#qtabs"); bar.innerHTML = "";
     [1, 2, 3, 4].forEach((n) => {
-      const b = el("button", { class: "qtab", role: "tab", id: `qtab-${n}`, "aria-selected": String(n === cur), "aria-controls": n === 1 ? "qpanel-1" : "qpanel-soon", tabindex: n === cur ? "0" : "-1" },
-        `<span class="qn">Q${n}</span><span class="ql"><b>${t("quarter", n)}</b><small>${n === 1 ? t("qStations", UNITS.length) : t("soonTag")}</small></span>${n === 1 ? "" : '<span class="lock" aria-hidden="true">🔒</span>'}`);
+      const live = qUnits(n).length > 0;
+      const b = el("button", { class: "qtab", role: "tab", id: `qtab-${n}`, "aria-selected": String(n === cur), "aria-controls": live ? "qpanel-1" : "qpanel-soon", tabindex: n === cur ? "0" : "-1" },
+        `<span class="qn">Q${n}</span><span class="ql"><b>${t("quarter", n)}</b><small>${live ? t("qStations", qUnits(n).length) : t("soonTag")}</small></span>${live ? "" : '<span class="lock" aria-hidden="true">🔒</span>'}`);
       b.addEventListener("click", () => selectQuarter(n));
       b.addEventListener("keydown", (e) => {
         const dir = (e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0) * (S.lang === "ar" ? -1 : 1);
@@ -1036,8 +1106,10 @@ window.UNITS = [
       bar.appendChild(b);
     });
     const p1 = $("#qpanel-1"), ps = $("#qpanel-soon");
-    p1.hidden = cur !== 1; ps.hidden = cur === 1;
-    if (cur !== 1) {
+    const live = qUnits(cur).length > 0;
+    p1.hidden = !live; ps.hidden = live;
+    p1.setAttribute("aria-labelledby", `qtab-${cur}`);
+    if (!live) {
       ps.setAttribute("aria-labelledby", `qtab-${cur}`);
       ps.innerHTML = `<div class="soon"><div class="big" aria-hidden="true">Q${cur}</div><div class="txt"><span class="pill"><i></i>${t("soonTag")}</span><h3>${t("soonTitle", cur)}</h3><p>${t("soonP")}</p><button class="btn gold" id="soonBack">${t("backQ1")}</button></div></div>`;
       $("#soonBack").addEventListener("click", () => { selectQuarter(1); $("#qtab-1").focus(); });
@@ -1045,7 +1117,7 @@ window.UNITS = [
   }
   function selectQuarter(n) {
     if (S.qtab === n) return;
-    S.qtab = n; save(); renderQuarters();
+    S.qtab = n; save(); renderHome();
   }
   $("#nameForm").addEventListener("submit", (e) => {
     e.preventDefault(); S.name = $("#nameIn").value.trim().slice(0, 60); save();
@@ -1137,22 +1209,75 @@ window.UNITS = [
       box.appendChild(inp);
       box.appendChild(el("div", { class: "hintline", id: "hint", "aria-live": "polite" }));
       wrap.appendChild(box);
-    } else if (q.type === "plot") {
+    } else if (q.type === "plot" || q.type === "sys") {
       const box = el("div", { class: "plotwrap" });
       wrap.appendChild(box);
-      const draw = () => drawPlot(box, q, done ? (a.resp || []) : (Array.isArray(cur.draft) ? cur.draft : []), done ? a.status : null);
+      const sys = q.type === "sys";
+      if (!done && !cur.draft) { cur.draft = sys ? { a: [], b: [], act: 0, x: "", y: "" } : []; cur.hist = []; }
+      const draw = () => drawPlot(box, q, done ? a.resp : cur.draft, done ? a : null);
       draw();
       if (!done) {
+        wrap.appendChild(el("p", { class: "kbd plottip" }, t("plotTip")));
+        if (sys) {
+          const pick = el("div", { class: "plotctl", role: "radiogroup", "aria-label": t("lineN", 1) + " / " + t("lineN", 2) });
+          [0, 1].forEach((k) => {
+            const b = el("button", { class: "btn ghost sm lnpick", type: "button", role: "radio", "data-k": k, style: `--lc:${LINE_C[k]}` }, `<i aria-hidden="true"></i>${t("lineN", k + 1)}`);
+            b.addEventListener("click", () => { cur.draft.act = k; sync(); });
+            pick.appendChild(b);
+          });
+          wrap.appendChild(pick);
+        }
         const ctl = el("div", { class: "plotctl" });
         const xi = el("input", { class: "inp sm", "aria-label": "x coordinate", placeholder: "x", inputmode: "numeric" });
         const yi = el("input", { class: "inp sm", "aria-label": "y coordinate", placeholder: "y", inputmode: "numeric" });
         const add = el("button", { class: "btn ghost sm", type: "button" }, t("addPt"));
+        const undo = el("button", { class: "btn ghost sm", type: "button" }, t("undo"));
         const clr = el("button", { class: "btn ghost sm", type: "button" }, t("clearPts"));
-        add.addEventListener("click", () => { const x = Number(xi.value), y = Number(yi.value); if (xi.value !== "" && yi.value !== "" && Number.isFinite(x) && Number.isFinite(y)) { togglePt(q, [x, y]); xi.value = yi.value = ""; draw(); } });
-        clr.addEventListener("click", () => { cur.draft = []; draw(); });
-        ctl.append(el("span", { class: "kbd" }, "( "), xi, el("span", { class: "kbd" }, " , "), yi, el("span", { class: "kbd" }, " )"), add, clr);
+        add.addEventListener("click", () => { const x = Number(xi.value), y = Number(yi.value); if (xi.value !== "" && yi.value !== "" && Number.isFinite(x) && Number.isFinite(y)) { togglePt(q, [x, y]); xi.value = yi.value = ""; sync(); } });
+        undo.addEventListener("click", () => { if (cur.hist && cur.hist.length) { cur.draft = JSON.parse(cur.hist.pop()); sync(); } });
+        clr.addEventListener("click", () => { snap(); if (sys) { cur.draft.a = []; cur.draft.b = []; } else cur.draft = []; sync(); });
+        ctl.append(el("span", { class: "kbd" }, "( "), xi, el("span", { class: "kbd" }, " , "), yi, el("span", { class: "kbd" }, " )"), add, undo, clr);
         wrap.appendChild(ctl);
-        box.addEventListener("plotpick", draw);
+        if (sys) {
+          const sol = el("div", { class: "ans" });
+          const sx = el("input", { class: "inp sm", id: "inp", "aria-label": "Solution x", autocomplete: "off" }), sy = el("input", { class: "inp sm", "aria-label": "Solution y", autocomplete: "off" });
+          sx.value = cur.draft.x; sy.value = cur.draft.y;
+          sx.addEventListener("input", () => { cur.draft.x = sx.value; $("#hint").textContent = ""; });
+          sy.addEventListener("input", () => { cur.draft.y = sy.value; $("#hint").textContent = ""; });
+          sol.append(el("label", { for: "inp" }, t("solIs")), el("span", { class: "kbd" }, "( "), sx, el("span", { class: "kbd" }, " , "), sy, el("span", { class: "kbd" }, " )"));
+          wrap.appendChild(sol);
+        }
+        const sync = () => { draw(); if (sys) wrap.querySelectorAll(".lnpick").forEach((b) => b.setAttribute("aria-checked", String(+b.dataset.k === cur.draft.act))); undo.disabled = !(cur.hist && cur.hist.length); };
+        sync();
+        // Tap empty spot = add point · tap a point = remove it · drag a point = move it (mouse, pen and touch).
+        let drag = null;
+        const at = (e) => {
+          const svg = box.querySelector("svg"), r = svg.getBoundingClientRect(), g = q.grid, W = 520, M = 40, S = 440, k = W / r.width;
+          const sx2 = (e.clientX - r.left) * k, sy2 = (e.clientY - r.top) * k;
+          return [Math.round((g.xmin + ((sx2 - M) / S) * (g.xmax - g.xmin)) / g.step) * g.step, Math.round((g.ymax - ((sy2 - M) / S) * (g.ymax - g.ymin)) / g.step) * g.step];
+        };
+        box.addEventListener("pointerdown", (e) => {
+          if (!e.target.closest("svg")) return;
+          e.preventDefault();
+          const p = at(e), set = activeSet(q), i = set.findIndex((x) => x[0] === p[0] && x[1] === p[1]);
+          drag = { p, i, moved: false };
+          box.setPointerCapture(e.pointerId);
+        });
+        box.addEventListener("pointermove", (e) => {
+          if (!drag || drag.i < 0) return;
+          const p = at(e), g = q.grid, set = activeSet(q);
+          if (p[0] < g.xmin || p[0] > g.xmax || p[1] < g.ymin || p[1] > g.ymax) return;
+          if (set.some((x) => x[0] === p[0] && x[1] === p[1])) return;
+          if (!drag.moved) snap();
+          drag.moved = true; set[drag.i] = p; sync();
+        });
+        const end = () => {
+          if (!drag) return;
+          if (!drag.moved) { togglePt(q, drag.p); sync(); }
+          drag = null; const h = $("#hint"); if (h) h.textContent = "";
+        };
+        box.addEventListener("pointerup", end);
+        box.addEventListener("pointercancel", () => { drag = null; });
       }
       wrap.appendChild(el("div", { class: "hintline", id: "hint", "aria-live": "polite" }));
     } else if (q.type === "numx") {
@@ -1220,18 +1345,24 @@ window.UNITS = [
     }
     return wrap;
   }
+  const LINE_C = ["#1c5bd6", "#d9711a"];
+  const activeSet = (q) => q.type === "sys" ? (cur.draft.act ? cur.draft.b : cur.draft.a) : cur.draft;
+  function snap() { (cur.hist = cur.hist || []).push(JSON.stringify(cur.draft)); if (cur.hist.length > 50) cur.hist.shift(); }
   function togglePt(q, p) {
     const g = q.grid;
     if (p[0] < g.xmin || p[0] > g.xmax || p[1] < g.ymin || p[1] > g.ymax) return;
-    const d = Array.isArray(cur.draft) ? cur.draft.slice() : [];
+    snap();
+    const d = activeSet(q);
     const k = d.findIndex((x) => x[0] === p[0] && x[1] === p[1]);
     if (k >= 0) d.splice(k, 1); else { d.push(p); if (d.length > 2) d.shift(); }
-    cur.draft = d; const h = $("#hint"); if (h) h.textContent = "";
+    const h = $("#hint"); if (h) h.textContent = "";
   }
-  function drawPlot(box, q, pts, status) {
-    const g = q.grid, S = 440, M = 40, W = S + M * 2;
+  // resp: plot → [[x,y],[x,y]]; sys → {a, b, act, x, y}. done: the saved answer (status, parts) or null while drawing.
+  function drawPlot(box, q, resp, done) {
+    const g = q.grid, S = 440, M = 40, W = S + M * 2, status = done ? done.status : null, sys = q.type === "sys";
+    const sets = sys ? [resp.a || [], resp.b || []] : [resp || []];
     const X = (x) => M + ((x - g.xmin) / (g.xmax - g.xmin)) * S, Y = (y) => M + ((g.ymax - y) / (g.ymax - g.ymin)) * S;
-    let h = `<svg viewBox="0 0 ${W} ${W}" class="plot${status ? "" : " live"}" role="img" aria-label="Coordinate grid from ${g.xmin} to ${g.xmax}. ${pts.length} points selected.">`;
+    let h = `<svg viewBox="0 0 ${W} ${W}" class="plot${status ? "" : " live"}" role="img" aria-label="Coordinate grid from ${g.xmin} to ${g.xmax}. ${sets.map((s2) => s2.length).join(" + ")} points selected.">`;
     h += `<rect x="${M}" y="${M}" width="${S}" height="${S}" fill="#fff"/>`;
     for (let v = g.xmin; v <= g.xmax; v += g.step) h += `<line x1="${X(v)}" y1="${M}" x2="${X(v)}" y2="${M + S}" stroke="#dfe3ee" stroke-width="1"/>`;
     for (let v = g.ymin; v <= g.ymax; v += g.step) h += `<line x1="${M}" y1="${Y(v)}" x2="${M + S}" y2="${Y(v)}" stroke="#dfe3ee" stroke-width="1"/>`;
@@ -1245,22 +1376,18 @@ window.UNITS = [
       const m = (q2[1] - p[1]) / (q2[0] - p[0]), f = (x) => p[1] + m * (x - p[0]);
       return `<line x1="${X(g.xmin)}" y1="${Y(f(g.xmin))}" x2="${X(g.xmax)}" y2="${Y(f(g.xmax))}" stroke="${stroke}" stroke-width="3.5" ${dash ? 'stroke-dasharray="9 7"' : ""} stroke-linecap="round"/>`;
     };
+    // colour per line: while drawing = the line's colour; after checking = green (right) / red (wrong)
+    const ok = (k) => sys ? done.parts && done.parts[k] : status === "right";
+    const col = (k) => !status ? (sys ? LINE_C[k] : "#1c2b6e") : ok(k) ? "#12806a" : "#c8472e";
     h += `<clipPath id="pc"><rect x="${M}" y="${M}" width="${S}" height="${S}"/></clipPath><g clip-path="url(#pc)">`;
-    if (status === "wrong") { const k = latticeOnLine(q); if (k.length >= 2) h += seg(k[0], k[1], "#12806a", true); }
-    if (pts.length === 2 && !(pts[0][0] === pts[1][0] && pts[0][1] === pts[1][1])) h += seg(pts[0], pts[1], status === "wrong" ? "#c8472e" : status === "right" ? "#12806a" : "#1c2b6e", false);
+    if (status === "wrong") (sys ? q.answer.lines : [q.answer]).forEach((l) => { const k = latticeOnLine(q, l); if (k.length >= 2) h += seg(k[0], k[1], "#12806a", true); });
+    sets.forEach((pts, k) => { if (pts.length === 2 && !(pts[0][0] === pts[1][0] && pts[0][1] === pts[1][1])) h += seg(pts[0], pts[1], col(k), false); });
     h += `</g>`;
-    pts.forEach((p) => { h += `<circle cx="${X(p[0])}" cy="${Y(p[1])}" r="10" fill="${status === "wrong" ? "#c8472e" : status === "right" ? "#12806a" : "#f3b415"}" stroke="#0f1a46" stroke-width="2.5"/>`; });
+    sets.forEach((pts, k) => pts.forEach((p) => { h += `<circle cx="${X(p[0])}" cy="${Y(p[1])}" r="10" fill="${!status ? (sys ? LINE_C[k] : "#f3b415") : col(k)}" stroke="#0f1a46" stroke-width="2.5"/>`; }));
+    if (sys && status) { const [sx, sy] = q.answer.sol.map(Number); h += `<circle cx="${X(sx)}" cy="${Y(sy)}" r="7" fill="#fff" stroke="#12806a" stroke-width="4"/>`; }
     h += `</svg>`;
-    box.innerHTML = h + `<div class="kbd plotcount">${status ? "" : t("ptsSel", pts.length)}</div>`;
-    if (status) return;
-    const svg = box.querySelector("svg");
-    svg.addEventListener("click", (e) => {
-      const r = svg.getBoundingClientRect(), k = W / r.width;
-      const sx = (e.clientX - r.left) * k, sy = (e.clientY - r.top) * k;
-      const x = Math.round((g.xmin + ((sx - M) / S) * (g.xmax - g.xmin)) / g.step) * g.step;
-      const y = Math.round((g.ymax - ((sy - M) / S) * (g.ymax - g.ymin)) / g.step) * g.step;
-      togglePt(q, [x, y]); box.dispatchEvent(new Event("plotpick"));
-    });
+    const live = status ? "" : sys ? `${t("lineN", resp.act + 1)}: ${t("ptsSel", sets[resp.act].length)}` : t("ptsSel", sets[0].length);
+    box.innerHTML = h + `<div class="kbd plotcount">${status ? "" : live}</div>`;
   }
   function pick(q, i) {
     const a = S.ans[q.id]; if (a && a.status) return;
@@ -1281,9 +1408,10 @@ window.UNITS = [
     if (q.type === "num" || q.type === "eq") resp = ($("#inp") || {}).value || "";
     if (q.type === "table") resp = [...document.querySelectorAll("#qCard td input")].map((x) => x.value);
     if (q.type === "plot") resp = Array.isArray(cur.draft) ? cur.draft.slice() : [];
+    if (q.type === "sys") resp = cur.draft ? { a: cur.draft.a.slice(), b: cur.draft.b.slice(), x: cur.draft.x, y: cur.draft.y } : {};
     if (q.type === "numx") resp = cur.draft === "none" || cur.draft === "all" ? cur.draft : (($("#inp") || {}).value || "");
     const g = G.grade(q, resp);
-    if (g.status === "empty") { hint(q.type === "mc" || q.type === "ms" ? t("pickOne") : q.type === "table" ? t("fillAll") : q.type === "plot" ? t("plotHint") : t("unreadable")); return; }
+    if (g.status === "empty") { hint(q.type === "mc" || q.type === "ms" ? t("pickOne") : q.type === "table" ? t("fillAll") : q.type === "plot" ? t("plotHint") : q.type === "sys" ? t("sysHint") : t("unreadable")); return; }
     if (g.status === "invalid") { hint(g.msg === "notSlopeIntercept" ? t("notSI") : t("unreadable")); return; }
     const isRetry = !!prev.firstStatus;
     const a = { resp, status: g.status, msg: g.msg, parts: g.parts, attempts: (prev.attempts || 0) + 1, firstStatus: prev.firstStatus || g.status, firstResp: prev.firstResp != null ? prev.firstResp : resp };
@@ -1306,6 +1434,8 @@ window.UNITS = [
     fb.className = "feedback on " + (ok ? "right" : "wrong");
     let p = ok ? "" : `<p>${t("ca")} <span class="ca">${keyText(q)}</span></p>`;
     if (!ok && a.msg === "notSimplest") p = `<p>${t("notSimplest")}</p>` + p;
+    if (!ok && (a.msg === "slopeOk" || a.msg === "interceptOk")) p = `<p>${t(a.msg)}</p>` + p;
+    if (!ok && q.type === "sys" && a.parts) p = `<p>${[t("lineN", 1), t("lineN", 2), t("solIs")].map((n, i) => `${a.parts[i] ? "✓" : "✗"} ${n}`).join(" · ")}</p>` + p;
     if (q.how && (!ok || !fresh)) p += `<p style="margin-top:6px">${q.how}</p>`;
     fb.innerHTML = `<div class="stamp" aria-hidden="true">${ok ? "✓" : "✗"}</div><div><h4>${ok ? t("right") : t("wrong")}</h4>${p}</div>${fresh && a.xp ? `<span class="xpfloat">+${a.xp} XP</span>` : ""}`;
   }
