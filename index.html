@@ -524,8 +524,9 @@ window.UNITS = [
   { id: "u3", code: "04", title: "Relations & Functions", ar: "العلاقات والدوال", pages: "EP1 p.22, 24–42 · IXL 30–40", glyph: "ƒ" },
   { id: "u4", code: "05", title: "Proportional Relationships", ar: "العلاقات التناسبية", pages: "EP1 p.43–52, 55–61", glyph: "∝" },
   { id: "u5", code: "06", title: "Number of Solutions", ar: "عدد الحلول", pages: "EP1 p.53–54, 62–66", glyph: "∞" },
-  { id: "u7", code: "07", quarter: 2, title: "Graphing Lines (Slope & y-Intercept)", ar: "تمثيل المستقيم بيانيًا (الميل والمقطع)", pages: "Q2 HW · Graph a line #11–20", glyph: "╱" },
-  { id: "u8", code: "08", quarter: 2, title: "Solving Systems by Graphing", ar: "حل أنظمة المعادلات بيانيًا", pages: "Q2 HW · Systems #3–12", glyph: "✕" }
+  { id: "u9", code: "07", quarter: 2, title: "Solving Linear Equations", ar: "حل المعادلات الخطية", pages: "Q2 HW · Solve for #1–21", glyph: "=" },
+  { id: "u7", code: "08", quarter: 2, title: "Graphing Lines (Slope & y-Intercept)", ar: "تمثيل المستقيم بيانيًا (الميل والمقطع)", pages: "Q2 HW · Graph a line #3–20", glyph: "╱" },
+  { id: "u8", code: "09", quarter: 2, title: "Solving Systems by Graphing", ar: "حل أنظمة المعادلات بيانيًا", pages: "Q2 HW · Systems #3–12", glyph: "✕" }
 ];
 
 (function () {
@@ -707,7 +708,38 @@ window.UNITS = [
 
   // ================= SOURCE 4 · Quarter 2 homework screenshots (graphing) =================
   // Screenshots cover "Graph this line" #11–20 of 20 and "Solve this system by graphing" #3–12 of 12 only.
-  const Q2G = (n, eqHtml, m, b) => add({ unit: "u7", page: n, item: n, id: `q2g-${String(n).padStart(2, "0")}`, src: `Q2 HW · Graph a line #${n} of 20`, short: `Q2 line #${n}`, type: "plot", prompt: "Graph this line using the slope and <i>y</i>-intercept:", math: eqHtml, ask: "Click to select points on the graph.", grid: Q4G, answer: { m, b } });
+  const Q2SF = (n, v, eq, ans) => add({ unit: "u9", page: n, item: n, id: `q2e-${String(n).padStart(2, "0")}`, src: `Q2 HW · Solve for #${n} of 21`, short: `Q2 solve #${n}`, type: "num", prompt: `Solve for <i>${v}</i>.`, math: eq.replace(/-/g, "−").replace(new RegExp(v, "g"), `<i>${v}</i>`), label: `<i>${v}</i> =`, answer: ans });
+  Q2SF(1, "h", "h - 3h - 8 = 14", "-11");
+  Q2SF(2, "m", "-2m - 4m - 17 = 1", "-3");
+  Q2SF(3, "j", "-7j - 14j + 9 = -12", "1");
+  Q2SF(4, "h", "9h - 8h = 7", "7");
+  Q2SF(5, "c", "4c - 3c = 14", "14");
+  Q2SF(6, "q", "13q - 9q + 5 = 17", "3");
+  Q2SF(7, "u", "8u - 7u + 2 = 17", "15");
+  Q2SF(8, "k", "-12 = -4(k - 13)", "16");
+  Q2SF(9, "z", "11z - 6z = -20", "-4");
+  Q2SF(10, "r", "4r - 3r = 20", "20");
+  Q2SF(11, "v", "7v - 6v = 9", "9");
+  Q2SF(12, "d", "-9d + 12d = 15", "5");
+  Q2SF(13, "w", "4w - 3w - 1 = 7", "8");
+  Q2SF(14, "s", "12s - 4s + 2 = 10", "1");
+  Q2SF(15, "v", "5 = 9v - 5(4v + 10)", "-5");
+  Q2SF(16, "r", "10r + 9(4r - 17) = -15", "3");
+  Q2SF(17, "w", "15w + 5w - 15w + 12 = -18", "-6");
+  Q2SF(18, "j", "19j - 18j = 12", "12");
+  Q2SF(19, "p", "2(p + 6) = 20", "4");
+  Q2SF(20, "u", "8u - 8u + u = 4", "4");
+  Q2SF(21, "s", "18 = 3(2 + s)", "4");
+  const Q2G = (n, eqHtml, m, b, flag) => add({ unit: "u7", page: n, item: n, id: `q2g-${String(n).padStart(2, "0")}`, src: `Q2 HW · Graph a line #${n} of 20`, short: `Q2 line #${n}`, type: "plot", prompt: "Graph this line using the slope and <i>y</i>-intercept:", math: eqHtml, ask: "Click to select points on the graph.", grid: Q4G, answer: { m, b }, ...(flag ? { flag } : {}) });
+  const CROP = (k) => `Question number is cropped in the screenshot; placed as #${k} by its position in the set.`;
+  Q2G(3, "<i>y</i> = −4<i>x</i> + 2", "-4", "2", CROP(3));
+  Q2G(4, `<i>y</i> = −${fr(1, 10)}<i>x</i> − 1`, "-1/10", "-1");
+  Q2G(5, "<i>y</i> = −5<i>x</i> + 5", "-5", "5", CROP(5));
+  Q2G(6, "<i>y</i> = −<i>x</i> + 3", "-1", "3");
+  Q2G(7, "<i>y</i> = 6<i>x</i> − 7", "6", "-7");
+  Q2G(8, "<i>y</i> = <i>x</i> + 6", "1", "6");
+  Q2G(9, `<i>y</i> = −${fr(1, 7)}<i>x</i> + 7`, "-1/7", "7");
+  Q2G(10, "<i>y</i> = 8<i>x</i> − 2", "8", "-2");
   Q2G(11, "<i>y</i> = −6<i>x</i> + 6", "-6", "6");
   Q2G(12, `<i>y</i> = ${fr(1, 8)}<i>x</i> − 6`, "1/8", "-6");
   Q2G(13, `<i>y</i> = −${fr(3, 5)}<i>x</i> − 6`, "-3/5", "-6");
@@ -1083,8 +1115,8 @@ window.UNITS = [
     $("#howList").innerHTML = t("how").map((x) => `<li>${x}</li>`).join("");
     const flagged = QS.filter((q) => q.flag);
     $("#srcP").innerHTML = S.lang === "ar"
-      ? `<b>${TOTAL}</b> سؤالًا من 4 مصادر: التدريب الإضافي 1 (76 سؤالًا، 66 صفحة)، وورقة L3.3 تطبيقات المعادلات الخطية (10 أسئلة)، ومراجعة IXL رقم 2 (40 سؤالًا)، وواجب التمثيل البياني للربع الثاني (20 سؤالًا). كل سؤال يحمل مصدره ورقمه الأصلي. لا تحتوي المصادر على مفتاح إجابات؛ لذا حُسبت الإجابات رياضيًا وتم التحقق منها. ${t("saved")}`
-      : `<b>${TOTAL}</b> questions from 4 sources: Quarter 1 Extra Practice 1 (76 items, 66 scanned pages), the L3.3 Applying Linear Equations worksheet (10 items), G8 IXL Quiz Review 2 (40 items) and the Quarter 2 graphing homework (20 items). Every question shows its source and original number. None of the sources include an answer key, so keys were derived mathematically and verified. ${t("saved")}`;
+      ? `<b>${TOTAL}</b> سؤالًا من 4 مصادر: التدريب الإضافي 1 (76 سؤالًا، 66 صفحة)، وورقة L3.3 تطبيقات المعادلات الخطية (10 أسئلة)، ومراجعة IXL رقم 2 (40 سؤالًا)، وواجب الربع الثاني (49 سؤالًا). كل سؤال يحمل مصدره ورقمه الأصلي. لا تحتوي المصادر على مفتاح إجابات؛ لذا حُسبت الإجابات رياضيًا وتم التحقق منها. ${t("saved")}`
+      : `<b>${TOTAL}</b> questions from 4 sources: Quarter 1 Extra Practice 1 (76 items, 66 scanned pages), the L3.3 Applying Linear Equations worksheet (10 items), G8 IXL Quiz Review 2 (40 items) and the Quarter 2 homework (49 items). Every question shows its source and original number. None of the sources include an answer key, so keys were derived mathematically and verified. ${t("saved")}`;
     $("#flagList").innerHTML = flagged.map((q) => `<li><b>${esc(q.short)}</b> — ${q.flag}</li>`).join("");
   }
   const qOf = (u) => u.quarter || 1;

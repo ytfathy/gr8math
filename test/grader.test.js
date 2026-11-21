@@ -15,9 +15,10 @@ const plain = v => JSON.parse(JSON.stringify(v)); // objects from the vm context
 
 test('the whole question bank is valid (keys parse, systems solve on both lines)', () => {
   assert.deepEqual(plain(G.validateBank(win.UNITS, Q)), []);
-  assert.equal(Q.filter(q => q.unit === 'u7').length, 10);
+  assert.equal(Q.filter(q => q.unit === 'u7').length, 18);
+  assert.equal(Q.filter(q => q.unit === 'u9').length, 21);
   assert.equal(Q.filter(q => q.unit === 'u8').length, 10);
-  assert.deepEqual(plain(win.UNITS.filter(u => u.quarter === 2).map(u => u.id)), ['u7', 'u8']);
+  assert.deepEqual(plain(win.UNITS.filter(u => u.quarter === 2).map(u => u.id)), ['u9', 'u7', 'u8']);
 });
 
 test('graph a line: any two correct points get full credit', () => {
@@ -63,4 +64,10 @@ test('every system key really is the intersection of its two lines', () => {
       assert.ok(Math.abs(y - (mn / md * x + Number(l.b))) < 1e-9, q.id);
     }
   }
+});
+
+test('Q2 solve-for keys match the worksheet answers', () => {
+  const keys = ['-11', '-3', '1', '7', '14', '3', '15', '16', '-4', '20', '9', '5', '8', '1', '-5', '3', '-6', '12', '4', '4', '4'];
+  keys.forEach((k, i) => assert.equal(G.grade(byId(`q2e-${String(i + 1).padStart(2, '0')}`), k).status, 'right', `#${i + 1}`));
+  assert.equal(G.grade(byId('q2e-08'), '17').status, 'wrong');
 });
