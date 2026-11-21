@@ -1,1 +1,3 @@
 node_modules
+# original 133 MB video (over GitHub's 100 MB limit); the app uses videos/linear-equations-master.mp4
+/Linear-Equations-Master.mp4
